@@ -354,7 +354,7 @@ impl IPTables {
             while need_retry {
                 match flock(file_lock.as_ref().unwrap().as_raw_fd(), FlockArg::LockExclusiveNonblock) {
                     Ok(_) => need_retry = false,
-                    Err(e) => if e.errno() == nix::errno::EAGAIN {
+                    Err(e) => if e.as_errno() == Some(nix::errno::Errno::EAGAIN) {
                         // FIXME: may cause infinite loop
                         need_retry = true;
                     } else {
